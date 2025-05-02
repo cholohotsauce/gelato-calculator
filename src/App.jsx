@@ -110,13 +110,14 @@ function App() {
                 />
             </div>
 
-            <button onClick={handleCalculate}>Calculate</button>
-
-            <button onClick={() => {
-                setDesiredYield('');
-                setScaledRecipe([]);
-            }}>New Batch
-            </button>
+            <div className="button-group">
+                <button onClick={handleCalculate}>Calculate</button>
+                <button onClick={() => {
+                    setDesiredYield('');
+                    setScaledRecipe([]);
+                }}>New Batch
+                </button>
+            </div>
 
             {scaledRecipe.length > 0 && (
                 <div className="result-card">
