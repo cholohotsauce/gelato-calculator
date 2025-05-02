@@ -1,0 +1,158 @@
+:root {
+  --noctua-brown: #7B4F30;
+  --noctua-cream: #FFF8E7;
+  --noctua-cream-soft: #fdf3e2;
+  --text-dark: #2f1c12;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+h1, h2 {
+  font-family: 'Playfair Display', serif;
+}
+
+body {
+  margin: 0;
+  font-family: 'Georgia', serif;
+  background-color: var(--noctua-brown);
+  color: var(--noctua-cream);
+}
+
+.container {
+  max-width: 600px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: var(--noctua-cream);
+  border-radius: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  text-align: center;
+  color: var(--text-dark);
+}
+
+img {
+  height: 60px;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  color: var(--noctua-brown);
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.4rem;
+  color: var(--noctua-brown);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  text-align: left;
+  margin-bottom: 0.3rem;
+  margin-top: 1rem;
+  color: var(--text-dark);
+}
+
+input, select {
+  padding: 0.6rem;
+  width: 100%;
+  max-width: 300px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
+  margin-top: 0.3rem;
+  margin-bottom: 1rem;
+  background-color: white;
+  color: var(--text-dark);
+}
+
+button {
+  background-color: var(--noctua-brown);
+  color: white;
+  padding: 0.6rem 1.4rem;
+  border: none;
+  border-radius: 999px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+button:hover {
+  background-color: #5f3c26;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 1rem;
+  line-height: 1.8;
+  color: var(--text-dark);
+}
+
+.logo-bar {
+  background-color: var(--noctua-brown);
+  padding: 1rem;
+  text-align: center;
+  border-radius: 20px 20px 0 0; /* top only */
+}
+
+
+.logo-bar img {
+  height: 60px;
+}
+
+input, select {
+  margin-bottom: 0.6rem;
+}
+
+button {
+  margin-top: 0.6rem;
+}
+
+.result-card {
+  margin-top: 2rem;
+  background-color: #f6eee0; /* a bit darker than cream-soft */
+  padding: 1.5rem;
+  border-radius: 15px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  text-align: left;
+  transition: background-color 0.3s ease;
+}
+
+@media (max-width: 600px) {
+  .container {
+    margin: 1rem;
+    padding: 1.5rem;
+    border-radius: 15px;
+  }
+
+  .logo-bar {
+    padding: 0.7rem;
+  }
+
+  input, select, button {
+    width: 100%;
+  }
+
+  h1, h2 {
+    font-size: 1.3rem;
+  }
+}
+
+button + button {
+  margin-left: 1rem;
+  background-color: transparent;
+  color: var(--noctua-brown);
+  border: 2px solid var(--noctua-brown);
+}
+
+button + button:hover {
+  background-color: var(--noctua-brown);
+  color: white;
+}
