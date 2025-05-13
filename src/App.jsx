@@ -1,9 +1,23 @@
 import { useState } from 'react';
 import './App.css';
 import logo from './images/Noctua_Primary-Logo_Almond.png';
+import jsPDF from 'jspdf';
 
-// Recipe data
+
 const recipes = {
+
+    'Hybrid Luca Base': {
+        ingredients: [
+            { ingredient: 'Whole Milk', amount: 5320.00 },
+            { ingredient: 'Heavy Cream', amount: 380.00 },
+            { ingredient: 'Skim Milk Powder', amount: 100.00 },
+            { ingredient: 'Sugar', amount: 1110.00 },
+            { ingredient: 'Dextrose', amount: 150.00 },
+            { ingredient: 'Base Luca 50', amount: 270.00 },
+        ],
+        baseYield: 8230.00,
+    },
+
     'Milk Base': {
         ingredients: [
             { ingredient: 'Milk', amount: 4000 },
@@ -60,15 +74,37 @@ const recipes = {
         ],
         baseYield: 3121,
     },
+    'Fat-Driven Base': {
+        ingredients: [
+            { ingredient: 'Milk', amount: 4000 },
+            { ingredient: 'Sugar', amount: 877.70 },
+            { ingredient: 'Dextrose', amount: 143.88 },
+            { ingredient: 'Base Luca', amount: 201.44 },
+        ],
+        baseYield: 5222.02,
+    },
 };
+
 function App() {
     const [selectedRecipe, setSelectedRecipe] = useState('Milk Base');
+    const [inputMode, setInputMode] = useState('yield');
     const [desiredYield, setDesiredYield] = useState('');
+    const [scalingIngredient, setScalingIngredient] = useState('');
+    const [ingredientAmount, setIngredientAmount] = useState('');
     const [scaledRecipe, setScaledRecipe] = useState([]);
 
     const handleCalculate = () => {
         const { ingredients, baseYield } = recipes[selectedRecipe];
-        const scaleFactor = parseFloat(desiredYield) / baseYield;
+        let scaleFactor = 1;
+
+        if (inputMode === 'yield') {
+            scaleFactor = parseFloat(desiredYield) / baseYield;
+        } else if (inputMode === 'ingredient' && scalingIngredient) {
+            const original = ingredients.find(i => i.ingredient === scalingIngredient);
+            if (original) {
+                scaleFactor = parseFloat(ingredientAmount) / original.amount;
+            }
+        }
 
         const scaled = ingredients.map(item => ({
             ingredient: item.ingredient,
@@ -78,10 +114,39 @@ function App() {
         setScaledRecipe(scaled);
     };
 
+    const handleReset = () => {
+        setDesiredYield('');
+        setIngredientAmount('');
+        setScalingIngredient('');
+        setScaledRecipe([]);
+    };
+
+    const handleExportPDF = () => {
+        const doc = new jsPDF();
+        const date = new Date().toLocaleString();
+
+        doc.setFontSize(16);
+        doc.text('Noctua Gelato Batch Sheet', 20, 20);
+
+        doc.setFontSize(12);
+        doc.text(`Recipe: ${selectedRecipe}`, 20, 30);
+        doc.text(`Input Mode: ${inputMode === 'yield' ? `Yield (${desiredYield} g)` : `${scalingIngredient} (${ingredientAmount} g)`}`, 20, 38);
+        doc.text(`Generated: ${date}`, 20, 46);
+
+        doc.setFontSize(12);
+        doc.text('Ingredients:', 20, 60);
+
+        scaledRecipe.forEach((item, idx) => {
+            doc.text(`• ${item.ingredient}: ${item.amount} g`, 25, 70 + idx * 8);
+        });
+
+        doc.save(`GelatoBatch_${selectedRecipe.replace(/\s+/g, '_')}.pdf`);
+    };
+
     return (
         <div className="container">
             <div className="logo-bar">
-                <img src={logo} alt="Noctua Logo"/>
+                <img src={logo} alt="Noctua Logo" />
             </div>
             <h1>Gelato Batch Calculator</h1>
 
@@ -89,7 +154,10 @@ function App() {
                 <label>Choose Recipe:</label>
                 <select
                     value={selectedRecipe}
-                    onChange={(e) => setSelectedRecipe(e.target.value)}
+                    onChange={(e) => {
+                        setSelectedRecipe(e.target.value);
+                        handleReset();
+                    }}
                 >
                     {Object.keys(recipes).map((key) => (
                         <option key={key} value={key}>
@@ -100,23 +168,62 @@ function App() {
             </div>
 
             <div>
-                <label>Desired Yield (g):</label>
-                <input
-                    type="text"
-                    inputMode="decimal"
-                    pattern="[0-9.]*"
-                    value={desiredYield}
-                    onChange={(e) => setDesiredYield(e.target.value)}
-                />
+                <label>Input Mode:</label>
+                <select
+                    value={inputMode}
+                    onChange={(e) => {
+                        setInputMode(e.target.value);
+                        handleReset();
+                    }}
+                >
+                    <option value="yield">Scale by Yield</option>
+                    <option value="ingredient">Scale by Ingredient</option>
+                </select>
             </div>
+
+            {inputMode === 'yield' ? (
+                <div>
+                    <label>Desired Yield (g):</label>
+                    <input
+                        type="text"
+                        inputMode="decimal"
+                        pattern="[0-9.]*"
+                        value={desiredYield}
+                        onChange={(e) => setDesiredYield(e.target.value)}
+                    />
+                </div>
+            ) : (
+                <>
+                    <div>
+                        <label>Ingredient to Scale From:</label>
+                        <select
+                            value={scalingIngredient}
+                            onChange={(e) => setScalingIngredient(e.target.value)}
+                        >
+                            <option value="">-- Select Ingredient --</option>
+                            {recipes[selectedRecipe].ingredients.map((item) => (
+                                <option key={item.ingredient} value={item.ingredient}>
+                                    {item.ingredient}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label>Available Amount (g):</label>
+                        <input
+                            type="text"
+                            inputMode="decimal"
+                            pattern="[0-9.]*"
+                            value={ingredientAmount}
+                            onChange={(e) => setIngredientAmount(e.target.value)}
+                        />
+                    </div>
+                </>
+            )}
 
             <div className="button-group">
                 <button onClick={handleCalculate}>Calculate</button>
-                <button onClick={() => {
-                    setDesiredYield('');
-                    setScaledRecipe([]);
-                }}>New Batch
-                </button>
+                <button onClick={handleReset}>New Batch</button>
             </div>
 
             {scaledRecipe.length > 0 && (
@@ -129,6 +236,7 @@ function App() {
                             </li>
                         ))}
                     </ul>
+                    <button onClick={handleExportPDF}>Export to PDF</button>
                 </div>
             )}
         </div>
