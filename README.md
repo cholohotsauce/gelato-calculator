@@ -1,15 +1,43 @@
+# Gelato Batch Calculator
 
-# React + Vite
+A batch-sheet calculator built for Noctua, a gelato shop. Kitchen staff pick a base recipe, enter how much gelato they need, and get every ingredient scaled in grams. The batch sheet can be exported as a PDF and printed for the production table.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<img src="docs/screenshot.png" alt="The calculator scaling the Milk Base recipe to 12 kg" width="300" />
 
-Currently, two official plugins are available:
+## What it does
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Scale by yield.** Enter the total batch weight you want (for example 12,000 g) and every ingredient scales to match.
+- **Scale by ingredient.** Short on something? Pick the ingredient and how much you have, and the rest of the recipe scales around it.
+- **Export to PDF.** Generates a dated batch sheet with the recipe, the input used, and the scaled ingredient list.
+- Works on a phone or tablet at the counter.
 
-## Expanding the ESLint configuration
+## Why I built it
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-=======
-# gelato-calculator
+I spent 15 years in professional kitchens. Scaling a base recipe by hand with a calculator is slow and easy to get wrong, and a wrong ratio ruins a whole batch. This app makes each batch sheet consistent and printable.
+
+## Tech
+
+React 19 · Vite · jsPDF · plain CSS
+
+## Run it
+
+```bash
+npm ci
+npm run dev      # http://localhost:5173
+npm run build    # production build in dist/
+```
+
+## How the scaling works
+
+Each recipe stores its ingredient weights and a base yield. The app computes one scale factor and applies it to every ingredient:
+
+- by yield: `factor = desired yield / base yield`
+- by ingredient: `factor = amount available / that ingredient's recipe amount`
+
+Recipes live in `src/App.jsx`.
+
+## What I'd add next
+
+- Edit and save recipes in the app instead of in code
+- Unit tests for the scaling math
+- Deploy a public demo
