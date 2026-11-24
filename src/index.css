@@ -1,3 +1,7 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 :root {
   --noctua-brown: #7B4F30;
   --noctua-cream: #FFF8E7;
@@ -105,6 +109,8 @@ ul {
 
 .logo-bar img {
   height: 60px;
+  max-width: 100%;
+  object-fit: contain;
 }
 
 input, select {
@@ -143,6 +149,7 @@ button {
   h1, h2 {
     font-size: 1.3rem;
   }
+
 }
 
 button + button {
@@ -157,3 +164,8 @@ button + button:hover {
   color: white;
 }
 
+@media (max-width: 600px) {
+  button + button {
+    margin-left: 0;
+  }
+}
